@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import { TextField, Typography } from "@mui/material";
+import { TextField } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 
 const SearchBar = () => {
-  const [searchValue, setSearchValue] = useState("");
+  const [setSearchValue] = useState("");
   const handleSearch = (e) => {
     setSearchValue(e.target.value);
   };
