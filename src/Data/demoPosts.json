@@ -1,0 +1,66 @@
+[
+  {
+    "user": {
+      "name": "Kevin Durant",
+      "username": "@kevindurant",
+      "profilePic": "https://www.aceshowbiz.com/images/photo/kevin_durant.jpg"
+    },
+    "post": "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief,"
+  },
+  {
+    "user": {
+      "name": "Russell Wilson",
+      "username": "@dangeruss",
+      "profilePic": "https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/14881.png"
+    },
+    "post": "Broncos country, let's ride"
+  },
+  {
+    "user": {
+      "name": "Forrest Gump",
+      "username": "@forrestgump",
+      "profilePic": "https://i.guim.co.uk/img/media/78eb1f6bd0f92d4d3cf19f5bddda1a902e2a6fcd/0_95_2371_1422/master/2371.jpg?width=1200&height=900&quality=85&auto=format&fit=crop&s=ad09e1704a89a19ed6d464fef9e42adc"
+    },
+    "post": "My mama always said life was like a box of chocolates. You never know what you're gonna get."
+  },
+  {
+    "user": {
+      "name": "Jonny Depp",
+      "username": "@johnbrown",
+      "profilePic": "https://m.media-amazon.com/images/M/MV5BOTBhMTI1NDQtYmU4Mi00MjYyLTk5MjEtZjllMDkxOWY3ZGRhXkEyXkFqcGdeQXVyNzI1NzMxNzM@._V1_.jpg"
+    },
+    "post": "My favorite color is black"
+  },
+  {
+    "user": {
+      "name": "Terminator",
+      "username": "@Termin8or",
+      "profilePic": "https://resizing.flixster.com/4QRPo96rNUmXp8lA2LqMBfZBvMQ=/300x300/v2/https://flxt.tmsimg.com/assets/p7764_i_h9_ad.jpg"
+    },
+    "post": "I'll be back"
+  },
+  {
+    "user": {
+      "name": "Elon Musk",
+      "username": "@elonmusk",
+      "profilePic": "https://i.guim.co.uk/img/media/4177156421c14699df17d5a0f76bc646ec4993b2/0_143_3433_2059/master/3433.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=ca3ff85c72003c7bda1362c90e611fb9"
+    },
+    "post": "Land on Mars, a round-trip ticket – half a million dollars. It can be done.” “You could warm Mars up, over time, with greenhouse gases.” “Mars is the only place in the solar system where life can become multi-planetarian."
+  },
+  {
+    "user": {
+      "name": "Winston Churchill",
+      "username": "@wchurchill",
+      "profilePic": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/person/image/974/Sir-Winston-Churchill.jpg"
+    },
+    "post": "If you’re going through hell, keep going"
+  },
+  {
+    "user": {
+      "name": "Snoop Dogg",
+      "username": "@snoopdogg",
+      "profilePic": "https://pbs.twimg.com/profile_images/1564375315526275072/7Xnua7BM_400x400.jpg"
+    },
+    "post": "When I'm not longer rapping, I want to open up an ice cream parlor and call myself Scoop Dogg."
+  }
+]
