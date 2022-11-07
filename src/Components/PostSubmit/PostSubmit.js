@@ -11,11 +11,11 @@ const PostSubmit = (props) => {
 
   const handleChange = (event) => {
     setPostInput(event.target.value);
-    event.preventDefault();
+    event.preventDefault(); // instead of returning false, we have preventDefault. Mainly used when using an add event listener
   };
 
-  const onSubmit = (event) => {
-    props.post(postInput);
+  const onSubmit = () => {
+    props.post(postInput); //send post back to parent page (Home)
     setPostInput("");
   };
 

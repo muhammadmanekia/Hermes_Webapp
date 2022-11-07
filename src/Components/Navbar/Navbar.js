@@ -4,7 +4,6 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-// import logo from "../../Images/smallLogo.png";
 import { Link } from "react-router-dom";
 import { Drawer } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -15,10 +14,12 @@ import logo from "../../Assets/logo.png";
 import SearchBar from "../SearchBar/SearchBar";
 const navItems = ["home", "messages", "profile", "settings"];
 
+// focusing on the sidebar and the top bar (called AppBar)
 const Navbar = (props) => {
-  var currentProfile = "Cameron Longhorn";
+  var currentProfile = "Temoc"; // just for testing
   return (
     <Box sx={{ display: "flex", flexGrow: 1, marginBottom: 20 }}>
+      {/* TopBar Appbar start */}
       <AppBar
         position="fixed"
         sx={{
@@ -36,7 +37,7 @@ const Navbar = (props) => {
           }}
         >
           <div style={{ display: "inline-flex", alignItems: "center" }}>
-            <img src={logo} width="70" />
+            <img src={logo} width="70" alt="" />
             <Typography
               fontSize={20}
               color="black"
@@ -49,6 +50,8 @@ const Navbar = (props) => {
           <SearchBar />
         </div>
       </AppBar>
+
+      {/* sidebar navbar start */}
       <Drawer
         sx={{
           width: 240,
@@ -62,16 +65,6 @@ const Navbar = (props) => {
         anchor="left"
       >
         <Toolbar style={{ marginTop: "auto", marginBottom: "auto" }}>
-          <Typography
-            variant="h6"
-            component="div"
-            color={"#000"}
-            // sx={{ flexGrow: 1 }}
-          >
-            <Link to="/">
-              {/* <img src={logo} alt="logo" width={120} style={{ padding: 12 }} /> */}
-            </Link>
-          </Typography>
           <Box sx={{ display: "grid", alignItems: "center" }}>
             {navItems.map((item) =>
               item === "home" || item === "profile" ? (
@@ -83,7 +76,7 @@ const Navbar = (props) => {
                     }}
                   >
                     <Link
-                      to="/"
+                      to="/" // home doesn't have a name, because we want the users to land on this page directly
                       style={{
                         color: "black",
                         textAlign: "left",
@@ -108,7 +101,7 @@ const Navbar = (props) => {
                     <Link
                       to={`/profile/user/${currentProfile
                         .split(" ")
-                        .join("")
+                        .join("") // link to your own profile. will be used in creating profile pages further into the project
                         .toLowerCase()}`}
                       style={{
                         color: "black",
@@ -135,7 +128,7 @@ const Navbar = (props) => {
                   }}
                 >
                   <Link
-                    to={`/${item}`}
+                    to={`/${item}`} // messages will be "/messsages", settings will be "/settings"
                     style={{
                       color: "black",
                       textDecoration: "none",

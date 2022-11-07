@@ -1,4 +1,4 @@
-import { Grid, Modal } from "@mui/material";
+import { Grid } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import PostSubmit from "../../Components/PostSubmit/PostSubmit";
 import PostView from "../../Components/PostView/PostView";
@@ -10,15 +10,17 @@ function Home(props) {
   const [postsArr, setPostsArr] = useState(demoPosts);
 
   const post = (input) => {
-    setPostInput(input);
+    setPostInput(input); //post coming from PostSubmit.js should be implemented here
   };
 
   useEffect(() => {
+    // after every time component mounts or changes post input, this loop runs.
     if (postsArr.length === 0) {
+      // if no posts, add a random post
       setPostsArr({
         user: {
           name: "Matthew McConaughey",
-          username: "Film Major",
+          username: "@matthewMcconaughey",
           profilePic:
             "https://www.celebritytalent.net/sampletalent/photos/sm/15105300.jpg",
         },
@@ -26,6 +28,7 @@ function Home(props) {
       });
     } else {
       setPostsArr((posts) => [
+        //if posts exist, take the previous ones and add the one currently sent
         ...posts,
         {
           user: {
@@ -37,6 +40,7 @@ function Home(props) {
         },
       ]);
     }
+    //below is a comment to avoid a warning
     // eslint-disable-next-line
   }, [postInput]);
   return (

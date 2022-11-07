@@ -9,25 +9,30 @@ import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 import React, { useState } from "react";
 
 function App() {
-  const url = useLocation();
-  const [userAuth, setUserAuth] = useState(false);
+  const url = useLocation(); // Grab the current URL
+  const [userAuth, setUserAuth] = useState(false); // set initial user Auth value as false
 
   const setUserAuthHandler = (bool) => {
+    // Method for a change in user authentication boolean
     setUserAuth(bool);
     console.log(userAuth);
   };
 
   return (
     <div>
-      {url.pathname.includes("signin") ||
+      {url.pathname.includes("signin") || // Navbar visible on every page but the sign in and sign up
       url.pathname.includes("signup") ? null : (
         <Navbar />
       )}
+
       <Routes>
+        {/* Routing Starts Here [BTW, since this is JSX, I can only comment like this] */}
         <Route
           path="/"
           element={
             <PrivateRoute userAuth={userAuth}>
+              {" "}
+              {/* Parent to Home page, makes sure that the user has signed in before they can access the homepage */}
               <Home />
             </PrivateRoute>
           }

@@ -1,7 +1,6 @@
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
@@ -11,17 +10,16 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import logo from "../../Assets/logoWhite.png";
 
-const theme = createTheme();
+const theme = createTheme(); // mui theme, allows the website to have a standard for styling
 
 export default function SignUp(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
-    props.setUserAuth("true");
+    props.setUserAuth(true); // signup doesnot work yet fully. Under development
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
       <Grid container spacing={2}>
         <Grid
           item
@@ -43,7 +41,7 @@ export default function SignUp(props) {
                 margin: "20px",
               }}
             >
-              <img src={logo} width="180" />
+              <img src={logo} width="180" alt="" />
               <Typography
                 fontSize={100}
                 color="white"

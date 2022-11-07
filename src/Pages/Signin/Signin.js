@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -10,7 +9,6 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import logo from "../../Assets/logoWhite.png";
 import { useNavigate } from "react-router-dom";
@@ -25,27 +23,24 @@ export default function SignIn(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
+    const data = new FormData(event.currentTarget); // Object used to easily create key value pairs. Allows the programmer to post data to API easily
     usersSecurity.map((user) => {
+      // check for user authenticity
       if (
         user.username === data.get("username") &&
         user.password === data.get("password")
       ) {
-        props.setUserAuth(true);
+        props.setUserAuth(true); //remove the barrier and allow the user to navigate to the homepage
         navigate("/");
       } else {
-        setAlert(true);
+        setAlert(true); // if incorrect user name or password, send an alert
       }
-    });
-    console.log({
-      username: data.get("username"),
-      password: data.get("password"),
+      return null; //<-- to avoid a warning
     });
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
       <Grid container spacing={2}>
         <Grid
           item
@@ -67,7 +62,7 @@ export default function SignIn(props) {
                 margin: "20px",
               }}
             >
-              <img src={logo} width="180" />
+              <img src={logo} width="180" alt="" />
               <Typography
                 fontSize={100}
                 color="white"
