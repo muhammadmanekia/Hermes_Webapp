@@ -2,5 +2,20 @@
   "name": "Temoc",
   "username": "@temoc",
   "password": "testing123",
-  "profilePic": "https://education.acmutd.co/temoc-primary.png"
+  "profilePic": "https://education.acmutd.co/temoc-primary.png",
+  "bio": "Supply Chain Management",
+  "fbLink": "https://www.facebook.com/",
+  "igLink": "https://www.instagram.com/",
+  "twtrLink": "https://www.twitter.com/",
+  "lkdinLink": "https://www.linkedin.com/notifications/",
+  "extBio": "Hello! My name is Cameron Longhorn. I am a 3rd year supply chain student. I love to hang out with friendsr watch movies, watch/play sports, and volunteer. I ar always open to connecting and meeting new people.",
+  "workExp": "IBM - Operations Intern \nUpdate six productivity reports regarding orders, shipments, revenues, and margins on adaily basis Reduce shipment down-time by 25%, allowing orders to increase by 30% for Southwest region Forecast inventory of computer hardware and process 50 client payments daily to ensure adequate supply. \n\n Paramount, Inc. - Accounting Intern \nTracked quarterly operating budget of approximately $50K for costume department Prepared 25 detailed financial reports monthly in Excel for upper management to assess progress on goals. \n\nFrida’s Tex-Mex Kitchen - Server  \nTracked quarterly operating budget of approximately $50K for costume department Prepared 25 detailed financial reports monthly in Excel for upper management to assess progress on goals",
+  "posts": [
+    "'I'm convinced that about half of what separates the successful entrepreneurs from the nonsuccessful ones is pure perseverance.' - Steve Jobs",
+    "Coding is fun!",
+    "Can't wait for tommorow's game!",
+    "Nothing like a nap after a long day of work done."
+  ],
+  "coverPhoto": "https://spirit.utdallas.edu/files/2021/12/temoc-chess.jpg",
+  "pronouns": "He/Him"
 }

@@ -7,6 +7,8 @@ import SignIn from "./Pages/Signin/Signin";
 import { useLocation } from "react-router-dom";
 import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 import React, { useState } from "react";
+import Messages from "./Pages/Messages/Messages";
+import UserProfile from "./Pages/Profile/Profile";
 
 function App() {
   const url = useLocation(); // Grab the current URL
@@ -31,7 +33,6 @@ function App() {
           path="/"
           element={
             <PrivateRoute userAuth={userAuth}>
-              {" "}
               {/* Parent to Home page, makes sure that the user has signed in before they can access the homepage */}
               <Home />
             </PrivateRoute>
@@ -45,6 +46,8 @@ function App() {
           path="/signin"
           element={<SignIn setUserAuth={setUserAuthHandler} />}
         />
+        <Route path="/messages" element={<Messages />} />
+        <Route path="/profile/user/:id" element={<UserProfile />} />
       </Routes>
     </div>
   );

@@ -12,44 +12,50 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import logo from "../../Assets/logo.png";
 import SearchBar from "../SearchBar/SearchBar";
+import { useLocation } from "react-router-dom";
+
 const navItems = ["home", "messages", "profile", "settings"];
 
 // focusing on the sidebar and the top bar (called AppBar)
 const Navbar = (props) => {
   var currentProfile = "Temoc"; // just for testing
+  const location = useLocation(); // get url
+
   return (
-    <Box sx={{ display: "flex", flexGrow: 1, marginBottom: 20 }}>
+    <Box sx={{ display: "flex", flexGrow: 1 }}>
       {/* TopBar Appbar start */}
-      <AppBar
-        position="fixed"
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: "white",
-        }}
-      >
-        <div
-          style={{
-            margin: 20,
-            marginLeft: 40,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+      {location.pathname === "/" ? (
+        <AppBar
+          position="fixed"
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            backgroundColor: "white",
           }}
         >
-          <div style={{ display: "inline-flex", alignItems: "center" }}>
-            <img src={logo} width="70" alt="" />
-            <Typography
-              fontSize={20}
-              color="black"
-              fontWeight={700}
-              fontFamily={"Verdana, Arial, Helvetica, sans-serif"}
-            >
-              Hermes
-            </Typography>
+          <div
+            style={{
+              margin: 20,
+              marginLeft: 40,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <div style={{ display: "inline-flex", alignItems: "center" }}>
+              <img src={logo} width="70" alt="" />
+              <Typography
+                fontSize={20}
+                color="black"
+                fontWeight={700}
+                fontFamily={"Verdana, Arial, Helvetica, sans-serif"}
+              >
+                Hermes
+              </Typography>
+            </div>
+            <SearchBar />
           </div>
-          <SearchBar />
-        </div>
-      </AppBar>
+        </AppBar>
+      ) : null}
 
       {/* sidebar navbar start */}
       <Drawer

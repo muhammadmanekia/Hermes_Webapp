@@ -50,6 +50,7 @@ function Home(props) {
       style={{
         backgroundColor: "rgba(255,255,255,0.2)",
         marginLeft: "auto",
+        marginTop: "120px",
       }}
     >
       <Grid item xs={12}>

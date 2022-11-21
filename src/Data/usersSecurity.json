@@ -1,6 +1,9 @@
 [
   {
+    "firstName": "temoc",
+    "lastName": "mascot",
     "username": "temoc",
+    "email": "temoc@gmail.com",
     "password": "testing123"
   },
   {

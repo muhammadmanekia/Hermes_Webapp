@@ -145,6 +145,15 @@ export default function SignIn(props) {
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
+              </Grid>
+              <div
+                style={{
+                  display: "flex",
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                }}
+              >
                 {alert ? (
                   <Alert
                     variant="filled"
@@ -154,7 +163,7 @@ export default function SignIn(props) {
                     Your Username or Password is Incorrect
                   </Alert>
                 ) : null}
-              </Grid>
+              </div>
             </Box>
           </Box>
         </Grid>
