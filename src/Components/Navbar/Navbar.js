@@ -13,12 +13,13 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import logo from "../../Assets/logo.png";
 import SearchBar from "../SearchBar/SearchBar";
 import { useLocation } from "react-router-dom";
+import { auth } from "../Auth/firebase";
 
 const navItems = ["home", "messages", "profile", "settings"];
 
 // focusing on the sidebar and the top bar (called AppBar)
 const Navbar = (props) => {
-  var currentProfile = "Temoc"; // just for testing
+  var currentProfile = "thisProfile";
   const location = useLocation(); // get url
 
   return (

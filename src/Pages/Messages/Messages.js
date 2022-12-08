@@ -27,13 +27,13 @@ function Messages() {
       index: 5,
       image: "",
       label: "Jonny Depp",
-      messagesArr: ["UGS 285", "Messages 2", "Messages 3"],
+      messagesArr: ["Johnny Depp", "Messages 2", "Messages 3"],
     },
     {
       index: 6,
       image: "",
       label: "Snoop Dogg",
-      messagesArr: ["UGS 285 Team 4", "Messages 2", "Messages 3"],
+      messagesArr: ["Snoop Dogg", "Messages 2", "Messages 3"],
     },
     {
       index: 7,
@@ -61,8 +61,6 @@ function Messages() {
   //styling to differentiate incoming and outgoing messages
   const handleSubmitMessage = () => {
     let messageExtract = messageVal.split("%&%?}}")[0];
-
-    console.log(messageExtract);
 
     var tempCopy = messages;
 

@@ -14,29 +14,26 @@ import logo from "../../Assets/logoWhite.png";
 import { useNavigate } from "react-router-dom";
 import usersSecurity from "../../Data/usersSecurity.json";
 import { Alert } from "@mui/material";
+import { useUserAuth } from "../../Components/Auth/Auth";
+import { ErrorOutline } from "@mui/icons-material";
 
 const theme = createTheme();
 
 export default function SignIn(props) {
-  const [alert, setAlert] = useState(false);
+  const { logIn } = useUserAuth();
+  const [err, setErr] = useState("");
+  const [data, setData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    const data = new FormData(event.currentTarget); // Object used to easily create key value pairs. Allows the programmer to post data to API easily
-    usersSecurity.map((user) => {
-      // check for user authenticity
-      if (
-        user.username === data.get("username") &&
-        user.password === data.get("password")
-      ) {
-        props.setUserAuth(true); //remove the barrier and allow the user to navigate to the homepage
-        navigate("/");
-      } else {
-        setAlert(true); // if incorrect user name or password, send an alert
-      }
-      return null; //<-- to avoid a warning
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErr("");
+    try {
+      await logIn(data.email, data.password);
+      navigate("/");
+    } catch (err) {
+      setErr(err.message);
+      console.log(err);
+    }
   };
 
   return (
@@ -107,10 +104,11 @@ export default function SignIn(props) {
                 required
                 fullWidth
                 id="username"
-                label="Username"
+                label="Email"
                 name="username"
                 autoComplete="username"
                 autoFocus
+                onChange={(e) => setData({ ...data, email: e.target.value })}
               />
               <TextField
                 margin="normal"
@@ -121,6 +119,7 @@ export default function SignIn(props) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e) => setData({ ...data, password: e.target.value })}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
@@ -154,13 +153,13 @@ export default function SignIn(props) {
                   right: 0,
                 }}
               >
-                {alert ? (
+                {err ? (
                   <Alert
                     variant="filled"
                     severity="error"
                     style={{ marginLeft: "auto", marginRight: "auto" }}
                   >
-                    Your Username or Password is Incorrect
+                    {err}
                   </Alert>
                 ) : null}
               </div>

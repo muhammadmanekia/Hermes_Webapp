@@ -12,6 +12,8 @@ import logo from "../../Assets/logoWhite.png";
 import ReCAPTCHA from "react-google-recaptcha";
 import usersSecurity from "../../Data/usersSecurity.json";
 import { useNavigate } from "react-router";
+import { useUserAuth } from "../../Components/Auth/Auth";
+import { Alert } from "@mui/material";
 
 const theme = createTheme(); // mui theme, allows the website to have a standard for styling
 
@@ -23,6 +25,9 @@ export default function SignUp(props) {
   const [validLastName, setValidLastName] = useState(true);
   const [validPassword, setValidPassword] = useState(true);
   const [confirmPassword, setConfirmPassword] = useState(true);
+  const [err, setErr] = useState(null);
+  const { signUp } = useUserAuth();
+
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
@@ -33,45 +38,32 @@ export default function SignUp(props) {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    props.setUserAuth(true); //remove the barrier and allow the user to navigate to the homepage
-    navigate("/");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErr("");
+    try {
+      await signUp(data.email, data.password, data);
+      navigate("/");
+    } catch (err) {
+      setErr(err.message);
+    }
   };
 
   const setEmail = (e) => {
-    if (!e.target.value.includes("@")) {
-      setValidEmail(false);
-    } else {
-      setValidEmail(true);
+    if (e.target.value.includes("@")) {
       setData({ ...data, email: e.target.value });
       console.log(data);
     }
+    return;
   };
 
   const setUsername = (e) => {
-    if (e.target.value.length < 5) {
-      setValidUsername(false);
-    } else {
-      setValidUsername(true);
-      setData({ ...data, username: e.target.value });
-    }
+    setValidUsername(true);
+    setData({ ...data, username: e.target.value });
   };
 
   const setPassword = (e) => {
-    var hasNumber = /\d/;
-    //eslint-disable-next-line
-    var hasSpecialChar = /[\s~`!@#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?()\._]/g;
-    if (
-      hasNumber.test(e.target.value) &&
-      hasSpecialChar.test(e.target.value) &&
-      e.target.value.length > 8
-    ) {
-      setValidPassword(true);
-      setData({ ...data, password: e.target.value });
-    } else {
-      setValidPassword(false);
-    }
+    setData({ ...data, password: e.target.value });
   };
 
   const confirmPasswordHandler = (e) => {
@@ -192,7 +184,6 @@ export default function SignUp(props) {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
-                    helperText={validEmail ? null : "incorrect email"}
                     onChange={(e) => setEmail(e)}
                   />
                 </Grid>
@@ -252,15 +243,7 @@ export default function SignUp(props) {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                disabled={
-                  recaptcha ||
-                  !validEmail ||
-                  !validUsername ||
-                  !validPassword ||
-                  !confirmPassword ||
-                  !validFirstName ||
-                  !validLastName
-                }
+                disabled={recaptcha || !confirmPassword}
                 onClick={() => usersSecurity.push(data)}
               >
                 Sign Up
@@ -272,6 +255,24 @@ export default function SignUp(props) {
                   </Link>
                 </Grid>
               </Grid>
+              <div
+                style={{
+                  display: "flex",
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                }}
+              >
+                {err ? (
+                  <Alert
+                    variant="filled"
+                    severity="error"
+                    style={{ marginLeft: "auto", marginRight: "auto" }}
+                  >
+                    {err}
+                  </Alert>
+                ) : null}
+              </div>
             </Box>
           </Box>
         </Grid>

@@ -4,45 +4,26 @@ import PostSubmit from "../../Components/PostSubmit/PostSubmit";
 import PostView from "../../Components/PostView/PostView";
 import userProfile from "../../Data/userProfile.json";
 import demoPosts from "../../Data/demoPosts.json";
+import { collection, getDocs } from "firebase/firestore";
+import { auth, db, storage } from "../../Components/Auth/firebase";
+import { getDownloadURL, ref } from "firebase/storage";
 
 function Home(props) {
-  const [postInput, setPostInput] = useState("");
+  const [user, setUser] = useState({});
   const [postsArr, setPostsArr] = useState(demoPosts);
 
-  const post = (input) => {
-    setPostInput(input); //post coming from PostSubmit.js should be implemented here
-  };
-
   useEffect(() => {
-    // after every time component mounts or changes post input, this loop runs.
-    if (postsArr.length === 0) {
-      // if no posts, add a random post
-      setPostsArr({
-        user: {
-          name: "Matthew McConaughey",
-          username: "@matthewMcconaughey",
-          profilePic:
-            "https://www.celebritytalent.net/sampletalent/photos/sm/15105300.jpg",
-        },
-        post: [postInput],
+    const colRef = collection(db, "user");
+
+    getDocs(colRef).then((snapshot) => {
+      snapshot.docs.forEach((doc) => {
+        if (doc.data().uid === auth.currentUser.uid) {
+          setUser(doc.data());
+        }
       });
-    } else {
-      setPostsArr((posts) => [
-        //if posts exist, take the previous ones and add the one currently sent
-        ...posts,
-        {
-          user: {
-            name: userProfile.name,
-            username: userProfile.username,
-            profilePic: userProfile.profilePic,
-          },
-          post: [postInput],
-        },
-      ]);
-    }
-    //below is a comment to avoid a warning
-    // eslint-disable-next-line
-  }, [postInput]);
+    });
+  }, []);
+
   return (
     <Grid
       container
@@ -54,8 +35,8 @@ function Home(props) {
       }}
     >
       <Grid item xs={12}>
-        <PostSubmit post={post} myProfile={props.myProfile} />
-        <PostView posts={postsArr} />
+        <PostSubmit myProfile={props.myProfile} user={user} />
+        <PostView posts={postsArr} user={user} />
       </Grid>
     </Grid>
   );

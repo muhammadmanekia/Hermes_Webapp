@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
@@ -6,6 +6,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import {
   Button,
@@ -21,17 +22,32 @@ import Grid from "@mui/material/Grid";
 import { Box } from "@mui/system";
 import { useLocation } from "react-router-dom";
 import user from "../../Data/userProfile.json";
+import {
+  collection,
+  doc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import { auth, db, storage } from "../../Components/Auth/firebase";
 
 const UserProfile = (props) => {
   var inituser = user;
   var currentProfile = "";
   var url = useLocation();
+  const [tempUser, setTempUser] = useState({});
   const [thisUser, setThisUser] = useState(inituser);
-  const [profilePicSrc, setProfilePic] = useState(inituser.profilePic);
-  const [bio, setBio] = useState(inituser.extBio);
-  const [coverPicSrc, setCoverPic] = useState(inituser.coverPhoto);
+  const [profilePicSrc, setProfilePic] = useState(
+    "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/271deea8-e28c-41a3-aaf5-2913f5f48be6/de7834s-6515bd40-8b2c-4dc6-a843-5ac1a95a8b55.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzI3MWRlZWE4LWUyOGMtNDFhMy1hYWY1LTI5MTNmNWY0OGJlNlwvZGU3ODM0cy02NTE1YmQ0MC04YjJjLTRkYzYtYTg0My01YWMxYTk1YThiNTUuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.BopkDn1ptIwbmcKHdAOlYHyAOOACXW0Zfgbs0-6BY-E"
+  );
+  const [bio, setBio] = useState(tempUser.bio);
+  const [coverPicSrc, setCoverPic] = useState(
+    "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
+  );
+  const [documentId, setDocId] = useState("");
   const [bioModal, setBioModal] = useState(false);
-  const [editPost, setEditPost] = useState({ index: -1, post: "" });
+  const [editPost, setEditPost] = useState({ docId: "", data: { post: "" } });
+  const [post, setPost] = useState([]);
   const [postModal, setPostModal] = useState(false);
   const [pronounModal, setPronounModal] = useState(false);
   const [pronouns, setPronouns] = useState(inituser.pronouns);
@@ -39,6 +55,57 @@ const UserProfile = (props) => {
   const profilePicInput = React.useRef(null); //profile picture button reference to input field
   const coverPicInput = React.useRef(null);
 
+  const colRef = collection(db, "user");
+  const postRef = collection(db, "posts");
+
+  useEffect(() => {
+    var postsArr = [];
+
+    async function fetchData() {
+      await getDocs(colRef).then((snapshot) => {
+        snapshot.docs.forEach((doc) => {
+          if (doc.data().uid === auth.currentUser.uid) {
+            setDocId(doc.id);
+            setTempUser(doc.data());
+          }
+        });
+      });
+
+      await getDocs(postRef).then((snapshot) => {
+        snapshot.docs.forEach((doc) => {
+          if (doc.data().uid === auth.currentUser.uid) {
+            postsArr.push({ docId: doc.id, data: doc.data() });
+          }
+        });
+        setPost(postsArr);
+        console.log(post);
+      });
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (tempUser.profilePic) {
+      getProfilePic();
+    }
+    if (tempUser.coverPic) {
+      getCoverPic();
+    }
+  }, [tempUser]);
+
+  const getProfilePic = async () => {
+    await getDownloadURL(ref(storage, tempUser.profilePic)).then((url) => {
+      console.log(url);
+      setProfilePic(url);
+    });
+  };
+
+  const getCoverPic = async () => {
+    await getDownloadURL(ref(storage, tempUser.coverPic)).then((url) => {
+      console.log(url);
+      setCoverPic(url);
+    });
+  };
   const profilePicRef = (event) => {
     // profile picture button updates the input field
     profilePicInput.current.click();
@@ -48,25 +115,85 @@ const UserProfile = (props) => {
     coverPicInput.current.click();
   };
 
-  const handleProfilePic = (e) => {
+  const handleEditPosts = (e) => {
+    console.log(editPost);
+    setEditPost((prevState) => ({
+      ...prevState,
+      data: { post: e.target.value },
+    }));
+  };
+
+  const handleSendPost = async (docId) => {
+    console.log("EDITPOST: ", editPost);
+    console.log("EDITPOST: ", docId);
+    const postRef = doc(db, "posts", docId);
+    await updateDoc(postRef, {
+      post: editPost.data.post,
+      profilePic: profilePicSrc,
+    });
+  };
+
+  const handlePronouns = async () => {
+    const userRef = doc(db, "user", documentId);
+    await updateDoc(userRef, {
+      pronouns: pronouns,
+    });
+    setPronounModal(false);
+  };
+
+  const handleProfilePic = async (e) => {
     // get files from desktop and save as src link
     var picture = e.target.files[0];
     var src = URL.createObjectURL(picture);
+    var urlStr = documentId + "222" + picture.name;
+    const storageRef = ref(storage, `images/${urlStr}`);
+    const userRef = doc(db, "user", documentId);
+
+    uploadBytes(storageRef, picture).then((snapshot) => {
+      console.log("Uploaded a blob or file!");
+      updateDoc(userRef, {
+        profilePic: storageRef.fullPath,
+      });
+    });
+
     setProfilePic(src);
   };
 
-  const handleCoverPic = (e) => {
+  const handleCoverPic = async (e) => {
     var picture = e.target.files[0];
     var src = URL.createObjectURL(picture);
+    var urlStr = documentId + "222" + picture.name;
+    const storageRef = ref(storage, `images/${urlStr}`);
+    const userRef = doc(db, "user", documentId);
+
+    await uploadBytes(storageRef, picture).then((snapshot) => {
+      console.log("Uploaded a blob or file!");
+      updateDoc(userRef, {
+        coverPic: storageRef.fullPath,
+      });
+    });
+
     setCoverPic(src);
   };
 
-  const handleDeletePost = (index) => {
+  const handleDeletePost = async (data, index) => {
     // delete post from an array of posts
-    var temp = thisUser;
-    temp.posts.splice(index, 1);
-    console.log(temp);
-    setThisUser({ ...temp });
+
+    const postRef = doc(db, "posts", data.docId);
+
+    await deleteDoc(postRef);
+  };
+
+  const handleEditPost = (post) => {
+    setEditPost(post);
+  };
+
+  const handleSubmitBio = async () => {
+    const userRef = doc(db, "user", documentId);
+    await updateDoc(userRef, {
+      bio: bio,
+    });
+    setBioModal(false);
   };
 
   console.log(url);
@@ -171,12 +298,12 @@ const UserProfile = (props) => {
             fontSize={25}
             sx={{ fontWeight: "bold", marginRight: "5px" }}
           >
-            {thisUser.name}
+            {tempUser.firstName} {tempUser.lastName}
           </Typography>
 
           <div style={{ display: "flex", marginTop: "5px" }}>
             <Typography fontSize={14} sx={{ fontWeight: "500", paddingTop: 1 }}>
-              {pronouns}
+              {tempUser.pronouns ? tempUser.pronouns : "Add Pronouns"}
             </Typography>
             <IconButton onClick={() => setPronounModal(true)}>
               <EditIcon fontSize="small" />
@@ -185,7 +312,7 @@ const UserProfile = (props) => {
         </div>
 
         <Typography fontSize={18} sx={{ fontWeight: "500", paddingTop: 0.5 }}>
-          {thisUser.username}
+          @{tempUser.username}
         </Typography>
         {/* display user social media links*/}
         <div style={{ display: "inline-flex", textAlign: "center" }}>
@@ -251,7 +378,7 @@ const UserProfile = (props) => {
                         component="div"
                         sx={{ textAlign: "left", paddingLeft: "2vh" }}
                       >
-                        {bio}
+                        {tempUser.bio && tempUser.bio}
                       </Typography>
                     </CardContent>
                   </CardActionArea>
@@ -269,7 +396,7 @@ const UserProfile = (props) => {
                           margin: 10,
                         }}
                       >
-                        Work Experience
+                        College Experience
                       </Typography>
 
                       <Typography
@@ -278,7 +405,7 @@ const UserProfile = (props) => {
                         sx={{ textAlign: "left", paddingLeft: "2vh" }}
                         style={{ whiteSpace: "pre-line" }}
                       >
-                        {thisUser.workExp}
+                        {tempUser.experience && tempUser.experience}
                       </Typography>
                     </CardContent>
                   </CardActionArea>
@@ -346,77 +473,81 @@ const UserProfile = (props) => {
                       Timeline
                     </Typography>
                     <Divider />
-                    {thisUser.posts.map((post, index) => (
-                      <div style={{ textAlign: "left" }} key={index}>
-                        <div>
-                          <img
-                            src={thisUser.profilePic}
-                            alt="Profile"
-                            style={{
-                              width: 60,
-                              height: 60,
-                              backgroundColor: "gray",
-                              borderRadius: "50%",
-                              marginTop: 10,
-                              float: "left",
-                              margin: 8,
-                              objectFit: "cover",
-                            }}
-                          />
-                        </div>
-                        <div style={{ paddingTop: 10, marginLeft: 20 }}>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                          >
+                    {post &&
+                      post.map((post, index) => (
+                        <div style={{ textAlign: "left" }} key={index}>
+                          <div>
+                            <img
+                              src={profilePicSrc}
+                              alt="Profile"
+                              style={{
+                                width: 60,
+                                height: 60,
+                                borderRadius: "50%",
+                                marginTop: 10,
+                                float: "left",
+                                margin: 8,
+                                objectFit: "cover",
+                              }}
+                            />
+                          </div>
+                          <div style={{ paddingTop: 10, marginLeft: 20 }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Typography
+                                gutterBottom
+                                variant="h6"
+                                component="div"
+                              >
+                                {tempUser.firstName} {tempUser.lastName}
+                              </Typography>
+                              <div>
+                                <IconButton
+                                  onClick={() => {
+                                    handleEditPost(post);
+                                    setPostModal(true);
+                                  }}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                                <IconButton>
+                                  <DeleteIcon
+                                    onClick={() =>
+                                      handleDeletePost(post, index)
+                                    }
+                                  />
+                                </IconButton>
+                              </div>
+                            </div>
                             <Typography
                               gutterBottom
-                              variant="h6"
+                              variant="h8"
                               component="div"
                             >
-                              {thisUser.name}
+                              @{tempUser.username}
                             </Typography>
-                            <div>
-                              <IconButton
-                                onClick={() => {
-                                  setEditPost({
-                                    ...editPost,
-                                    index: index,
-                                    post: post,
-                                  });
-                                  setPostModal(true);
-                                }}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                              <IconButton>
-                                <DeleteIcon
-                                  onClick={() => handleDeletePost(index)}
-                                />
-                              </IconButton>
-                            </div>
                           </div>
-                          <Typography gutterBottom variant="h8" component="div">
-                            {thisUser.username}
-                          </Typography>
+                          <div style={{ textAlign: "left" }}>
+                            <Typography
+                              gutterBottom
+                              component="div"
+                              style={{ padding: 10, fontSize: 14 }}
+                            >
+                              {post.data.post}
+                              {/* {editPost.index === index
+                                ? editPost.post
+                                : post.post} */}
+                            </Typography>
+                          </div>
+                          {index !== thisUser.posts.length - 1 ? (
+                            <Divider />
+                          ) : null}
                         </div>
-                        <div style={{ textAlign: "left" }}>
-                          <Typography
-                            gutterBottom
-                            component="div"
-                            style={{ padding: 10, fontSize: 14 }}
-                          >
-                            {/* {post} */}
-                            {editPost.index === index ? editPost.post : post}
-                          </Typography>
-                        </div>
-                        {index !== thisUser.posts.length - 1 ? (
-                          <Divider />
-                        ) : null}
-                      </div>
-                    ))}
+                      ))}
                   </CardContent>
                 </Card>
                 <Card sx={{ margin: 1 }}>
@@ -475,7 +606,7 @@ const UserProfile = (props) => {
             id="standard-multiline-flexible"
             multiline
             maxRows={4}
-            value={bio}
+            value={bio ? bio : tempUser.bio}
             onChange={(e) => setBio(e.target.value)}
             variant="standard"
             fullWidth
@@ -483,7 +614,7 @@ const UserProfile = (props) => {
           <Button
             style={{ float: "right", margin: 10 }}
             variant="contained"
-            onClick={() => setBioModal(false)}
+            onClick={() => handleSubmitBio()}
           >
             Submit
           </Button>
@@ -522,15 +653,18 @@ const UserProfile = (props) => {
             id="standard-multiline-flexible"
             multiline
             maxRows={4}
-            value={editPost.post}
-            onChange={(e) => setEditPost({ ...editPost, post: e.target.value })}
+            value={editPost.data.post && editPost.data.post}
+            onChange={(e) => handleEditPosts(e)}
             variant="standard"
             fullWidth
           />
           <Button
             style={{ float: "right", margin: 10 }}
             variant="contained"
-            onClick={() => setPostModal(false)}
+            onClick={() => {
+              handleSendPost(editPost.docId);
+              setPostModal(false);
+            }}
           >
             Submit
           </Button>
@@ -575,7 +709,7 @@ const UserProfile = (props) => {
           <Button
             style={{ float: "right", margin: 10 }}
             variant="contained"
-            onClick={() => setPronounModal(false)}
+            onClick={() => handlePronouns()}
           >
             Submit
           </Button>

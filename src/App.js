@@ -9,16 +9,11 @@ import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 import React, { useState } from "react";
 import Messages from "./Pages/Messages/Messages";
 import UserProfile from "./Pages/Profile/Profile";
+import { UserAuthContextProvider } from "./Components/Auth/Auth";
+import Settings from "./Pages/Settings/Settings";
 
 function App() {
   const url = useLocation(); // Grab the current URL
-  const [userAuth, setUserAuth] = useState(false); // set initial user Auth value as false
-
-  const setUserAuthHandler = (bool) => {
-    // Method for a change in user authentication boolean
-    setUserAuth(bool);
-    console.log(userAuth);
-  };
 
   return (
     <div>
@@ -26,29 +21,25 @@ function App() {
       url.pathname.includes("signup") ? null : (
         <Navbar />
       )}
-
-      <Routes>
-        {/* Routing Starts Here [BTW, since this is JSX, I can only comment like this] */}
-        <Route
-          path="/"
-          element={
-            <PrivateRoute userAuth={userAuth}>
-              {/* Parent to Home page, makes sure that the user has signed in before they can access the homepage */}
-              <Home />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/signup"
-          element={<Signup setUserAuth={setUserAuthHandler} />}
-        />
-        <Route
-          path="/signin"
-          element={<SignIn setUserAuth={setUserAuthHandler} />}
-        />
-        <Route path="/messages" element={<Messages />} />
-        <Route path="/profile/user/:id" element={<UserProfile />} />
-      </Routes>
+      <UserAuthContextProvider>
+        <Routes>
+          {/* Routing Starts Here [BTW, since this is JSX, I can only comment like this] */}
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                {/* Parent to Home page, makes sure that the user has signed in before they can access the homepage */}
+                <Home />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/profile/user/:id" element={<UserProfile />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </UserAuthContextProvider>
     </div>
   );
 }
